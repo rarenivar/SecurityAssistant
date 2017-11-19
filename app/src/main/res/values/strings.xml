@@ -1,8 +1,20 @@
 <resources>
-    <string name="app_name">SecurityAssistant</string>
+
+    <string name="app_name">Security Assistant</string>
+    <string name="app_slogan">Be Aware, Be Secure</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <!-- Page title -->
+    <string name="home_page_title">Home</string>
+    <string name="appscan_page_title">App Scan</string>
+    <string name="settings_page_title">Settings</string>
+    <string name="about_page_title">About</string>
+
+    <!-- Drawer menu list -->
+    <string name="header_image_content_description">Header image</string>
+
 </resources>
