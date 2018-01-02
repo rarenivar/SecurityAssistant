@@ -1,5 +1,6 @@
 package com.rarenivar.securityassistant.views;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -11,27 +12,44 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import com.rarenivar.securityassistant.R;
+import com.rarenivar.securityassistant.util.Config;
+import com.rarenivar.securityassistant.viewmodels.MainViewModel;
+
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
+    private MainViewModel model;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
+        model = ViewModelProviders.of(this).get(MainViewModel.class);
+        if (model.isAppDeviceAdmin()) {
+            // load home page
+            loadHomePage();
+        } else {
+            // load request admin rights
+            startActivityForResult(model.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
+        }
 
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Config.DEVICE_ADMIN_REQUEST) {
+            // requesting admin rights
+            if (resultCode == RESULT_CANCELED) {
+                startActivityForResult(model.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
+            } else if (resultCode == RESULT_OK) {
+                loadHomePage();
+            }
+        }
     }
 
     @Override
@@ -83,5 +101,22 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private void loadHomePage() {
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        TextView textview = findViewById(R.id.dude);
     }
 }

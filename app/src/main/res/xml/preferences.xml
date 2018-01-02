@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:id="@+id/checkbox_disable_camera"
+        android:title="Disable cameras"
+        android:summary="Disables all cameras on the device. If this settings is checked, no applications running will be able to access any cameras on the device"
+        android:key="@string/settings_disable_camera"
+        android:defaultValue="false" />
+    <CheckBoxPreference
+        android:title="Encrypt device"
+        android:summary="If the storage system is not encrypted, starts the encryption wizard"
+        android:key="@string/settings_encrypt_device"
+        android:defaultValue="false" />
+    <CheckBoxPreference
+        android:title="Connect only to secured WiFis"
+        android:summary="If enabled, this setting will not allow the device to connect to unsecured access points"
+        android:key="@string/settings_secured_wifis"
+        android:defaultValue="false" />
+    <ListPreference
+        android:title="Lock screen timeout"
+        android:summary="Adjust the time it will take the screen to get turn off and lock the device. To increase the security of your device, the application enforces a maximum timeout of 3 minutes"
+        android:key="@string/settings_screen_timeout"
+        android:defaultValue="1"
+        android:entries="@array/screen_timeout_entries"
+        android:entryValues="@array/screen_timeout_values" />
+    <ListPreference
+        android:title="Maximum failed password attempts"
+        android:summary="Specifies how many times a user can enter the wrongg password before the device wipes its data. This secures data in case the device is lost or stolen"
+        android:key="@string/settings_failed_password"
+        android:defaultValue="50"
+        android:entries="@array/reset_password_entries"
+        android:entryValues="@array/reset_password_values" />
+</PreferenceScreen>

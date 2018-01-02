@@ -3,6 +3,13 @@
     <string name="app_name">Security Assistant</string>
     <string name="app_slogan">Be Aware, Be Secure</string>
 
+    <!-- Preference keys -->
+    <string name="settings_disable_camera">setttings_disable_camera</string>
+    <string name="settings_encrypt_device">settings_encrypt_device</string>
+    <string name="settings_secured_wifis">settings_secured_wifis</string>
+    <string name="settings_screen_timeout">settings_screen_timeout</string>
+    <string name="settings_failed_password">settings_failed_password</string>
+
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
@@ -16,5 +23,9 @@
 
     <!-- Drawer menu list -->
     <string name="header_image_content_description">Header image</string>
+
+    <!-- Messages -->
+    <string name="disable_camera_update_msg">Device cameras have been disabled!</string>
+    <string name="enable_camera_update_msg">Device cameras have been enabled!</string>
 
 </resources>
