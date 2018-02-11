@@ -6,9 +6,8 @@ import android.arch.lifecycle.AndroidViewModel;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
+import com.rarenivar.securityassistant.R;
 import com.rarenivar.securityassistant.receivers.AdminPolicyManager;
-import com.rarenivar.securityassistant.views.MainActivity;
-
 
 public class MainViewModel extends AndroidViewModel {
 
@@ -16,11 +15,11 @@ public class MainViewModel extends AndroidViewModel {
 
     public MainViewModel(@NonNull Application application) {
         super(application);
-        adminPoliciesManager = new AdminPolicyManager(getApplication().getApplicationContext());
+        init();
     }
 
     public void init() {
-
+        adminPoliciesManager = new AdminPolicyManager(getApplication().getApplicationContext());
     }
 
     public boolean isAppDeviceAdmin() {
@@ -33,8 +32,7 @@ public class MainViewModel extends AndroidViewModel {
     public Intent getAdminRequestIntent() {
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminPoliciesManager.getmDeviceAdmin());
-        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION,
-                "some explanation here");
+        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_request_msg);
         return intent;
     }
 }

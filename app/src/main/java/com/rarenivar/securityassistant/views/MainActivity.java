@@ -22,19 +22,19 @@ import com.rarenivar.securityassistant.viewmodels.MainViewModel;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private MainViewModel model;
+    private MainViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        model = ViewModelProviders.of(this).get(MainViewModel.class);
-        if (model.isAppDeviceAdmin()) {
-            // load home page
+        viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        if (viewModel.isAppDeviceAdmin()) {
+            // app has admin rights, load home page
             loadHomePage();
         } else {
-            // load request admin rights
-            startActivityForResult(model.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
+            // need to request admin rights in order to use the app
+            startActivityForResult(viewModel.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
         }
 
     }
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == Config.DEVICE_ADMIN_REQUEST) {
             // requesting admin rights
             if (resultCode == RESULT_CANCELED) {
-                startActivityForResult(model.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
+                startActivityForResult(viewModel.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
             } else if (resultCode == RESULT_OK) {
                 loadHomePage();
             }
@@ -89,7 +89,6 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-
         if (id == R.id.nav_appscan) {
             startActivity(new Intent(this, AppScanActivity.class));
         } else if (id == R.id.nav_settings) {

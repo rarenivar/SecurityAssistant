@@ -27,5 +27,6 @@
     <!-- Messages -->
     <string name="disable_camera_update_msg">Device cameras have been disabled!</string>
     <string name="enable_camera_update_msg">Device cameras have been enabled!</string>
+    <string name="admin_request_msg">The app requires Adminitrator Rights in order to properly function</string>
 
 </resources>

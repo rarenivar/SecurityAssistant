@@ -24,8 +24,8 @@ public class AdminPolicyManager {
     private ComponentName mDeviceAdmin;
     private Context context;
 
-    public AdminPolicyManager(Context thecontext) {
-        context = thecontext;
+    public AdminPolicyManager(Context context) {
+        this.context = context;
         mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
         mDeviceAdmin = new ComponentName(context, SecurityAssistantDAR.class);
     }
@@ -47,18 +47,25 @@ public class AdminPolicyManager {
     }
 
     public boolean isStorageEncrypted() {
-        int encryptStatusInt = mDPM.getStorageEncryptionStatus();
+        int encryptionStatusInt = mDPM.getStorageEncryptionStatus();
         boolean status;
-
-        if (encryptStatusInt == ENCRYPTION_STATUS_ACTIVATING ||
-                encryptStatusInt == ENCRYPTION_STATUS_ACTIVE ||
-                encryptStatusInt == ENCRYPTION_STATUS_ACTIVE_DEFAULT_KEY ||
-                encryptStatusInt == ENCRYPTION_STATUS_ACTIVE_PER_USER) {
+        if (encryptionStatusInt == ENCRYPTION_STATUS_ACTIVATING ||
+            encryptionStatusInt == ENCRYPTION_STATUS_ACTIVE ||
+            encryptionStatusInt == ENCRYPTION_STATUS_ACTIVE_DEFAULT_KEY ||
+            encryptionStatusInt == ENCRYPTION_STATUS_ACTIVE_PER_USER) {
             status = true;
         } else {
             status = false;
         }
         return status;
+    }
+
+    public boolean isEncryptionSupported() {
+        int encryptionStatusInt = mDPM.getStorageEncryptionStatus();
+        if (encryptionStatusInt == ENCRYPTION_STATUS_UNSUPPORTED) {
+            return false;
+        }
+        return true;
     }
 
     public boolean encryptDevice() {
@@ -101,7 +108,7 @@ public class AdminPolicyManager {
     }
 
     public boolean getInstallFromUnknownSourcesValue() {
-        // Let's always assume it's true unless proven otherwise, which is the safe approach
+        // Let's always assume it's true unless proven otherwise
         boolean isUnknownSources = true;
         try {
             isUnknownSources = android.provider.Settings.Secure
@@ -137,7 +144,10 @@ public class AdminPolicyManager {
         else if (encryptStatusInt == ENCRYPTION_STATUS_UNSUPPORTED) {
             return Util.EncryptionStatus.Unsupported;
         }
-        return Util.EncryptionStatus.Active;
+        else if (encryptStatusInt == ENCRYPTION_STATUS_ACTIVE) {
+            return Util.EncryptionStatus.Active;
+        }
+        return null;
     }
 
     public DevicePolicyManager getmDPM() {
