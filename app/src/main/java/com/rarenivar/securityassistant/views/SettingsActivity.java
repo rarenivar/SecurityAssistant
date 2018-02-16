@@ -1,31 +1,22 @@
 package com.rarenivar.securityassistant.views;
 
 import android.app.admin.DevicePolicyManager;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.rarenivar.securityassistant.R;
 import com.rarenivar.securityassistant.receivers.AdminPolicyManager;
 import com.rarenivar.securityassistant.util.Util;
 import com.rarenivar.securityassistant.util.WiFiUtil;
 
-import static com.rarenivar.securityassistant.util.Util.isWiFiSecured;
 
 public class SettingsActivity extends AppCompatActivity {
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

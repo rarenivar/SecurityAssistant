@@ -40,7 +40,6 @@ public class WiFiUtil {
     }
 
     public static void displayNotificationIfUnsecured(Context context) {
-        Log.d(TAG, "checkWiFi");
         WifiConfiguration activeWifi = null;
         WifiManager wifiManager = (WifiManager)context.getApplicationContext()
                 .getSystemService(Context.WIFI_SERVICE);
@@ -54,8 +53,7 @@ public class WiFiUtil {
                         break;
                     }
                 }
-                if (activeWifi != null && isWiFiSecured(activeWifi)) {
-                        Log.d(TAG, "Wifi is secured!");
+                if (activeWifi != null && !isWiFiSecured(activeWifi)) {
                         displayNotification(context);
                 }
             }
