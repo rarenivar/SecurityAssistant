@@ -15,7 +15,6 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.rarenivar.securityassistant.R;
-import com.rarenivar.securityassistant.util.Config;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
 
 
@@ -34,7 +33,8 @@ public class MainActivity extends AppCompatActivity
             loadHomePage();
         } else {
             // need to request admin rights in order to use the app
-            startActivityForResult(viewModel.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
+            startActivityForResult(viewModel.getAdminRequestIntent(),
+                    getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
         }
 
     }
@@ -42,10 +42,11 @@ public class MainActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == Config.DEVICE_ADMIN_REQUEST) {
+        if (requestCode == getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE)) {
             // requesting admin rights
             if (resultCode == RESULT_CANCELED) {
-                startActivityForResult(viewModel.getAdminRequestIntent(), Config.DEVICE_ADMIN_REQUEST);
+                startActivityForResult(viewModel.getAdminRequestIntent(),
+                        getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
             } else if (resultCode == RESULT_OK) {
                 loadHomePage();
             }

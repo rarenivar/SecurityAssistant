@@ -168,7 +168,7 @@ public class AdminPolicyManager {
 
     public boolean enforceUsageOfPassword() {
         // TODO: uncommend, this is comment it out just for testing
-        /*this.getmDPM().setMaximumTimeToLock(this.getmDeviceAdmin(), Config.MAX_IDLE_TIMEOUT);
+        /*this.getmDPM().setMaximumTimeToLock(this.getmDeviceAdmin(),);
 
         this.getmDPM().setPasswordQuality(this.getmDeviceAdmin(),
                 DevicePolicyManager.PASSWORD_QUALITY_COMPLEX);
