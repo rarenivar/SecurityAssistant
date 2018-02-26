@@ -20,6 +20,8 @@ import static android.app.admin.DevicePolicyManager.ENCRYPTION_STATUS_UNSUPPORTE
 
 public class AdminPolicyManager {
 
+    private static long DEFAULT_SCREEN_TIME_TO_LOCK = 180000L;
+    private static int DEFAULT_MAX_FAILED_PASSWORDS_FOR_WIPE = 80;
     private DevicePolicyManager mDPM;
     private ComponentName mDeviceAdmin;
     private Context context;
@@ -43,7 +45,12 @@ public class AdminPolicyManager {
     }
 
     public void setMaxAttemptsToWipe(int attempts) {
-        mDPM.setMaximumFailedPasswordsForWipe(mDeviceAdmin, attempts);
+        try {
+            mDPM.setMaximumFailedPasswordsForWipe(mDeviceAdmin, attempts);
+        }
+        catch (SecurityException ex) {
+            int a = 3;
+        }
     }
 
     public boolean isStorageEncrypted() {
@@ -166,17 +173,24 @@ public class AdminPolicyManager {
         this.getmDPM().removeActiveAdmin(this.getmDeviceAdmin());
     }
 
-    public boolean enforceUsageOfPassword() {
-        // TODO: uncommend, this is comment it out just for testing
-        /*this.getmDPM().setMaximumTimeToLock(this.getmDeviceAdmin(),);
 
+    public void setDefaultScreenMaxTimeToLock() {
+        this.getmDPM().setMaximumTimeToLock(this.getmDeviceAdmin(), DEFAULT_SCREEN_TIME_TO_LOCK);
+    }
+
+    public void setDefaultMaxFailedPasswordsForWipe() {
+        setMaxAttemptsToWipe(DEFAULT_MAX_FAILED_PASSWORDS_FOR_WIPE);
+    }
+
+    public void setDevicePasswordQuality() {
         this.getmDPM().setPasswordQuality(this.getmDeviceAdmin(),
-                DevicePolicyManager.PASSWORD_QUALITY_COMPLEX);
+                DevicePolicyManager.PASSWORD_QUALITY_NUMERIC);
+    }
 
+    public boolean isPasswordSufficient() {
         if (this.getmDPM().isActivePasswordSufficient()) {
             return true;
-        }*/
-        // If password is not sufficient
+        }
         return false;
     }
 }

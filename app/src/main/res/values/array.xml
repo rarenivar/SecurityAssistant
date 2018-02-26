@@ -1,32 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="screen_timeout_entries">
+        <item>15 seconds</item>
         <item>30 seconds</item>
         <item>1 minute</item>
         <item>2 minutes</item>
-        <item>3 minutes</item>
     </string-array>
 
     <string-array name="screen_timeout_values">
-        <item>30</item>
-        <item>60</item>
-        <item>120</item>
-        <item>180</item>
+        <item>15000</item>
+        <item>30000</item>
+        <item>60000</item>
+        <item>120000</item>
     </string-array>
 
     <string-array name="reset_password_entries">
+        <item>None</item>
         <item>20 password tries</item>
-        <item>30 password tries</item>
         <item>40 password tries</item>
-        <item>50 password tries</item>
         <item>60 password tries</item>
+        <item>80 password tries</item>
+        <item>100 password tries</item>
     </string-array>
 
     <string-array name="reset_password_values">
+        <item>0</item>
         <item>20</item>
-        <item>30</item>
         <item>40</item>
-        <item>50</item>
         <item>60</item>
+        <item>80</item>
+        <item>100</item>
     </string-array>
 </resources>

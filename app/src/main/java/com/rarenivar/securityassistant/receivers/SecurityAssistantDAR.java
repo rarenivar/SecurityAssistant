@@ -16,6 +16,12 @@ public class SecurityAssistantDAR extends DeviceAdminReceiver {
     @Override
     public void onEnabled(Context context, Intent intent) {
         super.onEnabled(context, intent);
+
+        // Set default maximum time to lock and password quality
+        AdminPolicyManager adminPolicyManager = new AdminPolicyManager(context);
+        adminPolicyManager.setDefaultScreenMaxTimeToLock();
+        adminPolicyManager.setDevicePasswordQuality();
+        adminPolicyManager.setDefaultMaxFailedPasswordsForWipe();
     }
 
     @Override

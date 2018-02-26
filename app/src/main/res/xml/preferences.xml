@@ -20,7 +20,6 @@
         android:title="Lock screen timeout"
         android:summary="Adjust the time it will take the screen to get turn off and lock the device. To increase the security of your device, the application enforces a maximum timeout of 3 minutes"
         android:key="@string/settings_screen_timeout"
-        android:defaultValue="1"
         android:entries="@array/screen_timeout_entries"
         android:entryValues="@array/screen_timeout_values" />
     <ListPreference

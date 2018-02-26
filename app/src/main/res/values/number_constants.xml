@@ -6,6 +6,4 @@
     <integer name="DEVICE_ADMIN_REQUEST_CODE">200</integer>
     <integer name="SET_PASSWORD_REQUEST_CODE">300</integer>
 
-    <integer name="MAX_IDLE_TIMEOUT">180000</integer>
-
 </resources>

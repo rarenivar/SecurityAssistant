@@ -35,4 +35,8 @@ public class MainViewModel extends AndroidViewModel {
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_request_msg);
         return intent;
     }
+
+    public boolean isPasswordSufficient() {
+        return adminPoliciesManager.isPasswordSufficient();
+    }
 }

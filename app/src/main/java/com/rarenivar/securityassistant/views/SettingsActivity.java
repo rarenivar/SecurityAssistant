@@ -4,11 +4,11 @@ import android.app.admin.DevicePolicyManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.rarenivar.securityassistant.R;
 import com.rarenivar.securityassistant.receivers.AdminPolicyManager;
@@ -38,7 +38,9 @@ public class SettingsActivity extends AppCompatActivity {
         private AdminPolicyManager adminPolicyManager;
         private CheckBoxPreference disableCameraCheckbox;
         private CheckBoxPreference encryptDeviceCheckbox;
-        private CheckBoxPreference connectSecuredWiFiChckbox;
+        private CheckBoxPreference connectSecuredWiFiCheckbox;
+        private ListPreference timeToLockPreference;
+        private ListPreference maxNumOfAttemptsToWipe;
 
         @Override
         public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -93,13 +95,12 @@ public class SettingsActivity extends AppCompatActivity {
                     }
             );
 
-            connectSecuredWiFiChckbox = (CheckBoxPreference)findPreference(getResources()
+            connectSecuredWiFiCheckbox = (CheckBoxPreference)findPreference(getResources()
                     .getString(R.string.settings_secured_wifis));
-            connectSecuredWiFiChckbox.setOnPreferenceChangeListener(
+            connectSecuredWiFiCheckbox.setOnPreferenceChangeListener(
                     new Preference.OnPreferenceChangeListener() {
                         @Override
                         public boolean onPreferenceChange(Preference preference, Object newValue) {
-                            Log.d(TAG, "onPreferenceChange");
                             if ((Boolean)newValue) {
                                 WiFiUtil.displayNotificationIfUnsecured(getActivity());
                             }
@@ -108,6 +109,81 @@ public class SettingsActivity extends AppCompatActivity {
                     }
             );
 
+            timeToLockPreference = (ListPreference)findPreference(
+                    getResources().getString(R.string.settings_screen_timeout)
+            );
+            timeToLockPreference.setValueIndex(getCurrentTimeOutIndex());
+            timeToLockPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object timeInMs) {
+                    Long timeToLockInMs = Long.parseLong(String.valueOf(timeInMs));
+                    adminPolicyManager.setScreenTimeToLock(timeToLockInMs);
+                    return true;
+                }
+            });
+
+            maxNumOfAttemptsToWipe = (ListPreference)findPreference(
+                    getResources().getString(R.string.settings_failed_password)
+            );
+            maxNumOfAttemptsToWipe.setValueIndex(getCurrentMaxFailedPasswordAttempts());
+            maxNumOfAttemptsToWipe.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
+                @Override
+                public boolean onPreferenceChange(Preference preference, Object numAttempts) {
+                    int num = Integer.parseInt(String.valueOf(numAttempts));
+                    adminPolicyManager.setMaxAttemptsToWipe(num);
+                    return true;
+                }
+            });
+        }
+
+        public int getCurrentTimeOutIndex() {
+            int currentTimeoutInMs = (int)adminPolicyManager.getScreenTimeToLock();
+            int indexSelected;
+            switch (currentTimeoutInMs) {
+                case 30000:
+                    indexSelected = 0;
+                    break;
+                case 60000:
+                    indexSelected = 1;
+                    break;
+                case 120000:
+                    indexSelected = 2;
+                    break;
+                case 180000:
+                    indexSelected = 3;
+                    break;
+                default:
+                    indexSelected = 0;
+                    break;
+            }
+            return indexSelected;
+        }
+
+        public int getCurrentMaxFailedPasswordAttempts() {
+            int maxNumOfAttempts = adminPolicyManager.getMaxAttemptsToWipe();
+            int indexSelected;
+            switch (maxNumOfAttempts) {
+                case 20:
+                    indexSelected = 1;
+                    break;
+                case 30:
+                    indexSelected = 2;
+                    break;
+                case 40:
+                    indexSelected = 3;
+                    break;
+                case 50:
+                    indexSelected = 4;
+                    break;
+                case 60:
+                    indexSelected = 5;
+                    break;
+                default:
+                    indexSelected = 0;
+                    break;
+            }
+            return indexSelected;
         }
     }
+
 }

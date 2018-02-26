@@ -1,5 +1,6 @@
 package com.rarenivar.securityassistant.views;
 
+import android.app.admin.DevicePolicyManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
@@ -27,10 +28,31 @@ public class MainActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this, drawer,
+                toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+        TextView textview = findViewById(R.id.dude);
+
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         if (viewModel.isAppDeviceAdmin()) {
-            // app has admin rights, load home page
-            loadHomePage();
+            if (viewModel.isPasswordSufficient()) {
+                // app has admin rights, load home page
+                //loadHomePage();
+            } else {
+                Intent setPasswordIntent =
+                        new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
+                startActivityForResult(setPasswordIntent,
+                        getResources().getInteger(R.integer.SET_PASSWORD_REQUEST_CODE));
+            }
         } else {
             // need to request admin rights in order to use the app
             startActivityForResult(viewModel.getAdminRequestIntent(),
@@ -44,11 +66,26 @@ public class MainActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE)) {
             // requesting admin rights
-            if (resultCode == RESULT_CANCELED) {
+            if (resultCode == RESULT_OK) {
+                if (viewModel.isPasswordSufficient()) {
+                    //loadHomePage();
+                } else {
+                    Intent setPasswordIntent =
+                            new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
+                    startActivityForResult(setPasswordIntent,
+                            getResources().getInteger(R.integer.SET_PASSWORD_REQUEST_CODE));
+                }
+            } else {
                 startActivityForResult(viewModel.getAdminRequestIntent(),
                         getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
-            } else if (resultCode == RESULT_OK) {
-                loadHomePage();
+            }
+        }
+        else if (requestCode == getResources().getInteger(R.integer.SET_PASSWORD_REQUEST_CODE)) {
+            if (resultCode == RESULT_OK) {
+                //loadHomePage();
+            } else {
+                startActivityForResult(viewModel.getAdminRequestIntent(),
+                        getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
             }
         }
     }
