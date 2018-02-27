@@ -18,9 +18,10 @@ import com.rarenivar.securityassistant.util.WiFiUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 
+    private static final String TAG = "SettingsActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
         ActionBar actionBar = getSupportActionBar();
@@ -43,11 +44,6 @@ public class SettingsActivity extends AppCompatActivity {
         private ListPreference maxNumOfAttemptsToWipe;
 
         @Override
-        public void onActivityResult(int requestCode, int resultCode, Intent data) {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
-
-        @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
@@ -61,7 +57,6 @@ public class SettingsActivity extends AppCompatActivity {
                     new Preference.OnPreferenceChangeListener() {
                         @Override
                         public boolean onPreferenceChange(Preference preference, Object newStatus) {
-
                             String msg = ((boolean)newStatus) ?
                                     getString(R.string.disable_camera_update_msg) :
                                     getString(R.string.enable_camera_update_msg);

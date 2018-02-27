@@ -44,10 +44,7 @@ public class MainActivity extends AppCompatActivity
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         if (viewModel.isAppDeviceAdmin()) {
-            if (viewModel.isPasswordSufficient()) {
-                // app has admin rights, load home page
-                //loadHomePage();
-            } else {
+            if (!viewModel.isPasswordSufficient()) {
                 Intent setPasswordIntent =
                         new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
                 startActivityForResult(setPasswordIntent,
@@ -140,20 +137,4 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void loadHomePage() {
-        setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        DrawerLayout drawer = findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, drawer, toolbar, R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-
-        NavigationView navigationView = findViewById(R.id.nav_view);
-        navigationView.setNavigationItemSelectedListener(this);
-        TextView textview = findViewById(R.id.dude);
-    }
 }

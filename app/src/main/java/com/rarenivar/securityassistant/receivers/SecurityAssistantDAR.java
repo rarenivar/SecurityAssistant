@@ -5,23 +5,18 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
-/**
- * Created by ramiro on 11/22/17.
- */
 
 public class SecurityAssistantDAR extends DeviceAdminReceiver {
 
     @Override
     public void onEnabled(Context context, Intent intent) {
         super.onEnabled(context, intent);
-
-        // Set default maximum time to lock and password quality
+        // Load default security settings
         AdminPolicyManager adminPolicyManager = new AdminPolicyManager(context);
         adminPolicyManager.setDefaultScreenMaxTimeToLock();
-        adminPolicyManager.setDevicePasswordQuality();
         adminPolicyManager.setDefaultMaxFailedPasswordsForWipe();
+        adminPolicyManager.setDevicePasswordQuality();
     }
 
     @Override
