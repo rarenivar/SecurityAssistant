@@ -135,20 +135,20 @@ public class SettingsActivity extends AppCompatActivity {
             int currentTimeoutInMs = (int)adminPolicyManager.getScreenTimeToLock();
             int indexSelected;
             switch (currentTimeoutInMs) {
-                case 30000:
+                case 15000:
                     indexSelected = 0;
                     break;
-                case 60000:
+                case 30000:
                     indexSelected = 1;
                     break;
-                case 120000:
+                case 60000:
                     indexSelected = 2;
                     break;
-                case 180000:
+                case 120000:
                     indexSelected = 3;
                     break;
                 default:
-                    indexSelected = 0;
+                    indexSelected = 3;
                     break;
             }
             return indexSelected;
@@ -158,19 +158,22 @@ public class SettingsActivity extends AppCompatActivity {
             int maxNumOfAttempts = adminPolicyManager.getMaxAttemptsToWipe();
             int indexSelected;
             switch (maxNumOfAttempts) {
+                case 0:
+                    indexSelected = 0;
+                    break;
                 case 20:
                     indexSelected = 1;
                     break;
-                case 30:
+                case 40:
                     indexSelected = 2;
                     break;
-                case 40:
+                case 60:
                     indexSelected = 3;
                     break;
-                case 50:
+                case 80:
                     indexSelected = 4;
                     break;
-                case 60:
+                case 100:
                     indexSelected = 5;
                     break;
                 default:

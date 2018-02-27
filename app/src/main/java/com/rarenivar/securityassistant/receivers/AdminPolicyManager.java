@@ -21,40 +21,40 @@ import static android.app.admin.DevicePolicyManager.ENCRYPTION_STATUS_UNSUPPORTE
 public class AdminPolicyManager {
 
     private static long DEFAULT_SCREEN_TIME_TO_LOCK = 180000L;
-    private static int DEFAULT_MAX_FAILED_PASSWORDS_FOR_WIPE = 80;
-    private DevicePolicyManager mDPM;
-    private ComponentName mDeviceAdmin;
+    private static int DEFAULT_MAX_FAILED_PASSWORDS_FOR_WIPE = 100;
+    private DevicePolicyManager devicePolicyManager;
+    private ComponentName componentName;
     private Context context;
 
     public AdminPolicyManager(Context context) {
         this.context = context;
-        mDPM = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
-        mDeviceAdmin = new ComponentName(context, SecurityAssistantDAR.class);
+        devicePolicyManager = (DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE);
+        componentName = new ComponentName(context, SecurityAssistantDAR.class);
     }
 
     public void setCameraDisabled(boolean value) {
-        mDPM.setCameraDisabled(mDeviceAdmin, value);
+        devicePolicyManager.setCameraDisabled(componentName, value);
     }
 
     public void setEncryptionPolicy(boolean value) {
-        mDPM.setStorageEncryption(mDeviceAdmin, value);
+        devicePolicyManager.setStorageEncryption(componentName, value);
     }
 
     public void setScreenTimeToLock(long time) {
-        mDPM.setMaximumTimeToLock(mDeviceAdmin, time);
+        devicePolicyManager.setMaximumTimeToLock(componentName, time);
     }
 
     public void setMaxAttemptsToWipe(int attempts) {
         try {
-            mDPM.setMaximumFailedPasswordsForWipe(mDeviceAdmin, attempts);
+            devicePolicyManager.setMaximumFailedPasswordsForWipe(componentName, attempts);
         }
         catch (SecurityException ex) {
-            int a = 3;
+
         }
     }
 
     public boolean isStorageEncrypted() {
-        int encryptionStatusInt = mDPM.getStorageEncryptionStatus();
+        int encryptionStatusInt = devicePolicyManager.getStorageEncryptionStatus();
         boolean status;
         if (encryptionStatusInt == ENCRYPTION_STATUS_ACTIVATING ||
             encryptionStatusInt == ENCRYPTION_STATUS_ACTIVE ||
@@ -68,7 +68,7 @@ public class AdminPolicyManager {
     }
 
     public boolean isEncryptionSupported() {
-        int encryptionStatusInt = mDPM.getStorageEncryptionStatus();
+        int encryptionStatusInt = devicePolicyManager.getStorageEncryptionStatus();
         if (encryptionStatusInt == ENCRYPTION_STATUS_UNSUPPORTED) {
             return false;
         }
@@ -76,11 +76,11 @@ public class AdminPolicyManager {
     }
 
     public boolean encryptDevice() {
-        int encryptStatusInt = mDPM.getStorageEncryptionStatus();
+        int encryptStatusInt = devicePolicyManager.getStorageEncryptionStatus();
         AlertDialog alert = new AlertDialog.Builder(context).create();
         //We're only going to try to encrypt file is encryption is supported
         if (encryptStatusInt == ENCRYPTION_STATUS_INACTIVE) {
-            mDPM.setStorageEncryption(mDeviceAdmin, true);
+            devicePolicyManager.setStorageEncryption(componentName, true);
             return true;
         }
         else if (encryptStatusInt == ENCRYPTION_STATUS_UNSUPPORTED) {
@@ -132,19 +132,19 @@ public class AdminPolicyManager {
     }
 
     public boolean getCameraStatus() {
-        return mDPM.getCameraDisabled(mDeviceAdmin);
+        return devicePolicyManager.getCameraDisabled(componentName);
     }
 
     public long getScreenTimeToLock() {
-        return mDPM.getMaximumTimeToLock(mDeviceAdmin);
+        return devicePolicyManager.getMaximumTimeToLock(componentName);
     }
 
     public int getMaxAttemptsToWipe() {
-        return mDPM.getMaximumFailedPasswordsForWipe(mDeviceAdmin);
+        return devicePolicyManager.getMaximumFailedPasswordsForWipe(componentName);
     }
 
     public Util.EncryptionStatus getEncryptionStatus() {
-        int encryptStatusInt = mDPM.getStorageEncryptionStatus();
+        int encryptStatusInt = devicePolicyManager.getStorageEncryptionStatus();
         if (encryptStatusInt == ENCRYPTION_STATUS_INACTIVE) {
             return Util.EncryptionStatus.Inactive;
         }
@@ -157,25 +157,26 @@ public class AdminPolicyManager {
         return null;
     }
 
-    public DevicePolicyManager getmDPM() {
-        return mDPM;
+    public DevicePolicyManager getDevicePolicyManager() {
+        return devicePolicyManager;
     }
 
-    public ComponentName getmDeviceAdmin() {
-        return mDeviceAdmin;
+    public ComponentName getComponentName() {
+        return componentName;
     }
 
     public boolean isAdminActive() {
-        return mDPM.isAdminActive(mDeviceAdmin);
+        return devicePolicyManager.isAdminActive(componentName);
     }
 
     public void removeAdminRights() {
-        this.getmDPM().removeActiveAdmin(this.getmDeviceAdmin());
+        this.getDevicePolicyManager().removeActiveAdmin(this.getComponentName());
     }
 
 
     public void setDefaultScreenMaxTimeToLock() {
-        this.getmDPM().setMaximumTimeToLock(this.getmDeviceAdmin(), DEFAULT_SCREEN_TIME_TO_LOCK);
+        this.getDevicePolicyManager()
+                .setMaximumTimeToLock(this.getComponentName(), DEFAULT_SCREEN_TIME_TO_LOCK);
     }
 
     public void setDefaultMaxFailedPasswordsForWipe() {
@@ -183,12 +184,12 @@ public class AdminPolicyManager {
     }
 
     public void setDevicePasswordQuality() {
-        this.getmDPM().setPasswordQuality(this.getmDeviceAdmin(),
+        this.getDevicePolicyManager().setPasswordQuality(this.getComponentName(),
                 DevicePolicyManager.PASSWORD_QUALITY_NUMERIC);
     }
 
     public boolean isPasswordSufficient() {
-        if (this.getmDPM().isActivePasswordSufficient()) {
+        if (this.getDevicePolicyManager().isActivePasswordSufficient()) {
             return true;
         }
         return false;

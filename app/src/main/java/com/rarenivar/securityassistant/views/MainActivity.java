@@ -13,7 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 import com.rarenivar.securityassistant.R;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
@@ -40,11 +39,11 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        TextView textview = findViewById(R.id.dude);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         if (viewModel.isAppDeviceAdmin()) {
             if (!viewModel.isPasswordSufficient()) {
+                // password need to be sufficient to use the app
                 Intent setPasswordIntent =
                         new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
                 startActivityForResult(setPasswordIntent,
@@ -64,9 +63,7 @@ public class MainActivity extends AppCompatActivity
         if (requestCode == getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE)) {
             // requesting admin rights
             if (resultCode == RESULT_OK) {
-                if (viewModel.isPasswordSufficient()) {
-                    //loadHomePage();
-                } else {
+                if (!viewModel.isPasswordSufficient()) {
                     Intent setPasswordIntent =
                             new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
                     startActivityForResult(setPasswordIntent,
@@ -78,9 +75,7 @@ public class MainActivity extends AppCompatActivity
             }
         }
         else if (requestCode == getResources().getInteger(R.integer.SET_PASSWORD_REQUEST_CODE)) {
-            if (resultCode == RESULT_OK) {
-                //loadHomePage();
-            } else {
+            if (resultCode != RESULT_OK) {
                 startActivityForResult(viewModel.getAdminRequestIntent(),
                         getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
             }

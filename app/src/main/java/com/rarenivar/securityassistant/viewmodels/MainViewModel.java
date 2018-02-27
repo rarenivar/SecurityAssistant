@@ -23,7 +23,7 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public boolean isAppDeviceAdmin() {
-        if (adminPoliciesManager.getmDPM() != null && adminPoliciesManager.isAdminActive()) {
+        if (adminPoliciesManager.getDevicePolicyManager() != null && adminPoliciesManager.isAdminActive()) {
             return true;
         }
         return false;
@@ -31,7 +31,7 @@ public class MainViewModel extends AndroidViewModel {
 
     public Intent getAdminRequestIntent() {
         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminPoliciesManager.getmDeviceAdmin());
+        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, adminPoliciesManager.getComponentName());
         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, R.string.admin_request_msg);
         return intent;
     }
