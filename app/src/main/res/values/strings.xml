@@ -29,4 +29,8 @@
     <string name="enable_camera_update_msg">Device cameras have been enabled!</string>
     <string name="admin_request_msg">The app requires Adminitrator Rights in order to properly function</string>
 
+    <!-- Notifications -->
+    <string name="notification_unsecured_wifi_title">Unsecured WiFi</string>
+    <string name="notification_unsecured_wifi_msg">Device is connected to an unsecured access point!</string>
+
 </resources>

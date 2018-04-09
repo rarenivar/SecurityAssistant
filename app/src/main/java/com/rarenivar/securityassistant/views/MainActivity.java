@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.rarenivar.securityassistant.R;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
@@ -22,6 +24,7 @@ public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     private MainViewModel viewModel;
+    private FloatingActionButton appScanButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +46,7 @@ public class MainActivity extends AppCompatActivity
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
         if (viewModel.isAppDeviceAdmin()) {
             if (!viewModel.isPasswordSufficient()) {
-                // password need to be sufficient to use the app
+                // password needs to be sufficient to use the app
                 Intent setPasswordIntent =
                         new Intent(DevicePolicyManager.ACTION_SET_NEW_PASSWORD);
                 startActivityForResult(setPasswordIntent,
@@ -54,6 +57,15 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(viewModel.getAdminRequestIntent(),
                     getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
         }
+
+        appScanButton = findViewById(R.id.security_scan_button);
+        appScanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // do security scan
+                viewModel.performSecurityScan();
+            }
+        });
 
     }
 

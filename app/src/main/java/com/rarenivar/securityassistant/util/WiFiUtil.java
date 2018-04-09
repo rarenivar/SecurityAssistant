@@ -63,14 +63,11 @@ public class WiFiUtil {
     private static void displayNotification(Context context) {
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0,
                 new Intent(context, MainActivity.class), 0);
-        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM);
+        Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 
-        NotificationCompat.Builder mBuilder =
-                (NotificationCompat.Builder) new NotificationCompat.Builder(context)
-                        .setContentTitle
-                                ("this is the title")
-                        .setContentText
-                                ("this is the message");
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                        .setContentTitle(context.getString(R.string.notification_unsecured_wifi_title))
+                        .setContentText(context.getString(R.string.notification_unsecured_wifi_msg));
         // Lollipop requires a white logo withh transparency
         if (android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             mBuilder.setSmallIcon(R.mipmap.ic_launcher);
@@ -80,7 +77,7 @@ public class WiFiUtil {
         mBuilder.setContentIntent(contentIntent);
         mBuilder.setDefaults(Notification.DEFAULT_SOUND);
         mBuilder.setAutoCancel(true);
-        //mBuilder.setSound(alarmSound);
+        mBuilder.setSound(alarmSound);
         NotificationManager mNotificationManager =
                 (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(1, mBuilder.build());

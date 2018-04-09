@@ -4,14 +4,18 @@ import android.app.Application;
 import android.app.admin.DevicePolicyManager;
 import android.arch.lifecycle.AndroidViewModel;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 
 import com.rarenivar.securityassistant.R;
+import com.rarenivar.securityassistant.models.AppScan;
+import com.rarenivar.securityassistant.models.SecurityScan;
 import com.rarenivar.securityassistant.receivers.AdminPolicyManager;
 
 public class MainViewModel extends AndroidViewModel {
 
     public AdminPolicyManager adminPoliciesManager;
+    public SecurityScan securityScan;
 
     public MainViewModel(@NonNull Application application) {
         super(application);
@@ -23,7 +27,8 @@ public class MainViewModel extends AndroidViewModel {
     }
 
     public boolean isAppDeviceAdmin() {
-        if (adminPoliciesManager.getDevicePolicyManager() != null && adminPoliciesManager.isAdminActive()) {
+        if (adminPoliciesManager.getDevicePolicyManager() != null
+                && adminPoliciesManager.isAdminActive()) {
             return true;
         }
         return false;
@@ -38,5 +43,10 @@ public class MainViewModel extends AndroidViewModel {
 
     public boolean isPasswordSufficient() {
         return adminPoliciesManager.isPasswordSufficient();
+    }
+
+    public void performSecurityScan() {
+        AppScan scan = new AppScan(getApplication());
+        scan.printApps();
     }
 }
