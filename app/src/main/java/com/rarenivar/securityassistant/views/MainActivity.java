@@ -1,10 +1,14 @@
 package com.rarenivar.securityassistant.views;
 
 import android.app.admin.DevicePolicyManager;
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.arch.persistence.room.Room;
+import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,12 +16,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.huma.room_for_asset.RoomAsset;
 import com.rarenivar.securityassistant.R;
+import com.rarenivar.securityassistant.data.DataGenerator;
+import com.rarenivar.securityassistant.data.DecisionRules;
+import com.rarenivar.securityassistant.data.DecisionRulesDatabase;
+import com.rarenivar.securityassistant.data.Permissions;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
+
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
@@ -26,9 +38,34 @@ public class MainActivity extends AppCompatActivity
     private MainViewModel viewModel;
     private FloatingActionButton appScanButton;
 
+    RoomDatabase.Callback rdc = new RoomDatabase.Callback(){
+        public void onCreate (DecisionRulesDatabase db){
+            Log.d("iscreated", "this is created!");
+            int a = 3;
+            // do something after database has been created
+        }
+        public void onOpen (DecisionRulesDatabase db){
+            Log.d("isopen", "this is open!");
+            int b = 3;
+            //do something every time database is open
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+//        new Thread(new Runnable() {
+//            public void run() {
+//                // a potentially  time consuming task
+//                DecisionRulesDatabase db = DecisionRulesDatabase.getInstance(getApplicationContext());
+//                //DecisionRulesDatabase db = Room.databaseBuilder(getApplicationContext(),
+//                //       DecisionRulesDatabase.class, "malwarerules").addCallback(rdc).allowMainThreadQueries().build();
+//                // db.decisionRulesDao().insertAllDecisionRules(DataGenerator.generateDecisionRules());
+//                //List<DecisionRules> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
+//                List<DecisionRules> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
+//            }
+//        }).start();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -44,6 +81,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
+        viewModel.getAllPermissions().observe(this, new Observer<List<Permissions>>() {
+            @Override
+            public void onChanged(@Nullable List<Permissions> permissionsList) {
+                int a = 3;
+                int b = 3;
+            }
+        });
         if (viewModel.isAppDeviceAdmin()) {
             if (!viewModel.isPasswordSufficient()) {
                 // password needs to be sufficient to use the app
@@ -63,6 +107,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // do security scan
+                List<Permissions> here = viewModel.getAllPermissions().getValue();
                 viewModel.performSecurityScan();
             }
         });

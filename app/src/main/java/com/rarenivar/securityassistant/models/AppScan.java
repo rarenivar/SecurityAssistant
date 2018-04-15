@@ -32,7 +32,8 @@ public class AppScan {
                     appList.add(packageInfo);
                 }
             }
-            catch (PackageManager.NameNotFoundException exception) {
+            catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
                 continue;
             }
         }
