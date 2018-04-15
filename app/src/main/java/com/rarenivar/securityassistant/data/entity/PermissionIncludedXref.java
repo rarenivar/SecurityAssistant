@@ -1,11 +1,11 @@
-package com.rarenivar.securityassistant.data;
+package com.rarenivar.securityassistant.data.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "PermissionsExcludedXref")
-public class PermissionsExcludedXref {
+@Entity(tableName = "PermissionIncludedXref")
+public class PermissionIncludedXref {
 
     @PrimaryKey
     private int _id;

@@ -1,4 +1,4 @@
-package com.rarenivar.securityassistant.data;
+package com.rarenivar.securityassistant.data.database;
 
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.db.SupportSQLiteDatabase;
@@ -9,17 +9,25 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.rarenivar.securityassistant.data.dao.DecisionRuleDao;
+import com.rarenivar.securityassistant.data.dao.PermissionDao;
+import com.rarenivar.securityassistant.data.dao.PermissionExcludedXrefDao;
+import com.rarenivar.securityassistant.data.dao.PermissionIncludedXrefDao;
+import com.rarenivar.securityassistant.data.entity.DecisionRule;
+import com.rarenivar.securityassistant.data.entity.Permission;
+import com.rarenivar.securityassistant.data.entity.PermissionExcludedXref;
+import com.rarenivar.securityassistant.data.entity.PermissionIncludedXref;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 @Database(entities = {
-                        DecisionRules.class,
-                        Permissions.class,
-                        PermissionsIncludedXref.class,
-                        PermissionsExcludedXref.class
+                        DecisionRule.class,
+                        Permission.class,
+                        PermissionIncludedXref.class,
+                        PermissionExcludedXref.class
                      },
-          version = 1)
+          version = 3)
 public abstract class DecisionRulesDatabase extends RoomDatabase {
 
     private final static String DATABASE_NAME = "decisionrulesdb";
@@ -28,13 +36,13 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
 
     private static DecisionRulesDatabase INSTANCE;
 
-    public abstract DecisionRulesDao decisionRulesDao();
+    public abstract DecisionRuleDao decisionRulesDao();
 
-    public abstract PermissionsDao permissionsDao();
+    public abstract PermissionDao permissionsDao();
 
-    public abstract PermissionsIncludedXrefDao permissionsIncludedXrefDao();
+    public abstract PermissionIncludedXrefDao permissionsIncludedXrefDao();
 
-    public abstract PermissionsExcludedXrefDao permissionsExcludedXrefDao();
+    public abstract PermissionExcludedXrefDao permissionsExcludedXrefDao();
 
     public static DecisionRulesDatabase getDatabase(final Context context) {
         if (INSTANCE == null) {
@@ -80,29 +88,29 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
      */
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
-        private final PermissionsDao permissionsDao;
+        private final PermissionDao permissionDao;
 
         PopulateDbAsync(DecisionRulesDatabase db) {
-            permissionsDao = db.permissionsDao();
+            permissionDao = db.permissionsDao();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
             // Start the app with a clean database every time.
             // Not needed if you only populate on creation.
-            //permissionsDao.deleteAll();
+            //permissionDao.deleteAll();
 
-            Permissions permission = new Permissions(3, "Hello1");
-            Permissions permission2 = new Permissions(4, "Hello2");
-            Permissions permission3 = new Permissions(5, "Hello3");
-            Permissions permission4 = new Permissions(6, "Hello4");
-            List<Permissions> permissionsList = new ArrayList<>();
-            permissionsList.add(permission);
-            permissionsList.add(permission2);
-            permissionsList.add(permission3);
-            permissionsList.add(permission4);
-            //permissionsDao.insertPermission(permission);
-            permissionsDao.insertAllPermissions(permissionsList);
+            Permission permission = new Permission(3, "Hello1");
+            Permission permission2 = new Permission(4, "Hello2");
+            Permission permission3 = new Permission(5, "Hello3");
+            Permission permission4 = new Permission(6, "Hello4");
+            List<Permission> permissionList = new ArrayList<>();
+            permissionList.add(permission);
+            permissionList.add(permission2);
+            permissionList.add(permission3);
+            permissionList.add(permission4);
+            //permissionDao.insertPermission(permission);
+            permissionDao.insertAllPermissions(permissionList);
             return null;
         }
     }

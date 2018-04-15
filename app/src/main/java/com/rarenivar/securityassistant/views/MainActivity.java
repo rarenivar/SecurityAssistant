@@ -3,7 +3,6 @@ package com.rarenivar.securityassistant.views;
 import android.app.admin.DevicePolicyManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,12 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.huma.room_for_asset.RoomAsset;
 import com.rarenivar.securityassistant.R;
-import com.rarenivar.securityassistant.data.DataGenerator;
-import com.rarenivar.securityassistant.data.DecisionRules;
-import com.rarenivar.securityassistant.data.DecisionRulesDatabase;
-import com.rarenivar.securityassistant.data.Permissions;
+import com.rarenivar.securityassistant.data.database.DecisionRulesDatabase;
+import com.rarenivar.securityassistant.data.entity.Permission;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
 
 import java.util.List;
@@ -62,8 +58,8 @@ public class MainActivity extends AppCompatActivity
 //                //DecisionRulesDatabase db = Room.databaseBuilder(getApplicationContext(),
 //                //       DecisionRulesDatabase.class, "malwarerules").addCallback(rdc).allowMainThreadQueries().build();
 //                // db.decisionRulesDao().insertAllDecisionRules(DataGenerator.generateDecisionRules());
-//                //List<DecisionRules> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
-//                List<DecisionRules> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
+//                //List<DecisionRule> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
+//                List<DecisionRule> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
 //            }
 //        }).start();
 
@@ -81,9 +77,9 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getAllPermissions().observe(this, new Observer<List<Permissions>>() {
+        viewModel.getAllPermissions().observe(this, new Observer<List<Permission>>() {
             @Override
-            public void onChanged(@Nullable List<Permissions> permissionsList) {
+            public void onChanged(@Nullable List<Permission> permissionList) {
                 int a = 3;
                 int b = 3;
             }
@@ -107,7 +103,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View v) {
                 // do security scan
-                List<Permissions> here = viewModel.getAllPermissions().getValue();
+                List<Permission> here = viewModel.getAllPermissions().getValue();
                 viewModel.performSecurityScan();
             }
         });

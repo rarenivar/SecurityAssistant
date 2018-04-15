@@ -2,10 +2,10 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "8a9a99d09ccea3dd859657d3ce318509",
+    "identityHash": "308e8cc498f4b8b49ef1072637c8b895",
     "entities": [
       {
-        "tableName": "DecisionRules",
+        "tableName": "DecisionRule",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`_id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `ruleClass` INTEGER NOT NULL, `probability` REAL NOT NULL, PRIMARY KEY(`_id`))",
         "fields": [
           {
@@ -135,7 +135,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"8a9a99d09ccea3dd859657d3ce318509\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"308e8cc498f4b8b49ef1072637c8b895\")"
     ]
   }
 }

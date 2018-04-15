@@ -1,13 +1,13 @@
-package com.rarenivar.securityassistant.data;
+package com.rarenivar.securityassistant.data.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "Permissions")
-public class Permissions {
+@Entity(tableName = "Permission")
+public class Permission {
 
-    public Permissions(int _id, String name) {
+    public Permission(int _id, String name) {
         this._id = _id;
         this.name = name;
     }

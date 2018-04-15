@@ -1,11 +1,11 @@
-package com.rarenivar.securityassistant.data;
+package com.rarenivar.securityassistant.data.entity;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.PrimaryKey;
 
-@Entity(tableName = "DecisionRules")
-public class DecisionRules {
+@Entity(tableName = "DecisionRule")
+public class DecisionRule {
 
     @PrimaryKey
     private int _id;
@@ -51,7 +51,7 @@ public class DecisionRules {
         this.probability = probability;
     }
 
-    public DecisionRules(int _id, int number, int ruleClass, float probability) {
+    public DecisionRule(int _id, int number, int ruleClass, float probability) {
         this._id = _id;
         this.number = number;
         this.ruleClass = ruleClass;
