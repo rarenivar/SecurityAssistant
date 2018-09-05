@@ -13,13 +13,13 @@ import java.util.List;
 @Dao
 public interface PermissionDao {
 
-    @Query("select * from Permission")
-    LiveData<List<Permission>> getAllPermissions();
+    @Query("DELETE FROM Permission")
+    void deleteAll();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAllPermissions(List<Permission> permissionList);
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertPermission(Permission permission);
+    @Query("SELECT * from Permission")
+    LiveData<List<Permission>> getAllPermissions();
 
 }

@@ -2,17 +2,23 @@ package com.rarenivar.securityassistant.data.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.MutableLiveData;
+import android.database.Observable;
 import android.os.AsyncTask;
 
+import com.rarenivar.securityassistant.data.dao.DecisionRuleDao;
 import com.rarenivar.securityassistant.data.dao.PermissionDao;
 import com.rarenivar.securityassistant.data.database.DecisionRulesDatabase;
+import com.rarenivar.securityassistant.data.entity.DecisionRule;
 import com.rarenivar.securityassistant.data.entity.Permission;
 
 import java.util.List;
 
 public class DecisionRulesRepository {
 
+    private DecisionRuleDao decisionRuleDao;
     private PermissionDao permissionDao;
+    private LiveData<List<DecisionRule>> decisions;
     private LiveData<List<Permission>> permissions;
 
     // Note that in order to unit test the WordRepository, you have to remove the Application
@@ -23,34 +29,49 @@ public class DecisionRulesRepository {
         DecisionRulesDatabase db = DecisionRulesDatabase.getDatabase(application);
         permissionDao = db.permissionsDao();
         permissions = permissionDao.getAllPermissions();
+        decisionRuleDao = db.decisionRulesDao();
+        decisions = decisionRuleDao.getAllDecisionRules();
+        int a = 3;
     }
 
-    // Room executes all queries on a separate thread.
-    // Observed LiveData will notify the observer when the data has changed.
+//    public List<DecisionRule> getMatchingDecisionRules(List<String> permissions) {
+//        return decisionRuleDao.getDecisionRulesMatching(permissions);
+//    }
+
     public LiveData<List<Permission>> getAllPermissions() {
         return permissions;
     }
 
-    // You must call this on a non-UI thread or your app will crash.
-    // Like this, Room ensures that you're not doing any long running operations on the main
-    // thread, blocking the UI.
-    public void insert (Permission permission) {
-        new insertAsyncTask(permissionDao).execute(permission);
+    public LiveData<List<DecisionRule>> getAllDecisions() {
+        return decisions;
     }
 
-    private static class insertAsyncTask extends AsyncTask<Permission, Void, Void> {
+//    public void getMachingDecisionRules(List<String> permissions) {
+//        new matchPermissionsAsyncTask(decisionRuleDao).execute(permissions);
+//    }
 
-        private PermissionDao asyncTaskDao;
 
-        insertAsyncTask(PermissionDao dao) {
-            asyncTaskDao = dao;
-        }
-
-        @Override
-        protected Void doInBackground(final Permission... params) {
-            asyncTaskDao.insertPermission(params[0]);
-            return null;
-        }
-    }
+//    private class matchPermissionsAsyncTask extends AsyncTask<List<String>, Void, List<DecisionRule>> {
+//
+//        private DecisionRuleDao asyncDecisionRuleDaoTask;
+//
+//        matchPermissionsAsyncTask(DecisionRuleDao dao) {
+//            asyncDecisionRuleDaoTask = dao;
+//        }
+//
+//        @Override
+//        protected List<DecisionRule> doInBackground(List<String>... permissions) {
+//           //asyncDecisionRuleDaoTask.getAllDecisionRules();
+//           return asyncDecisionRuleDaoTask.getDecisionRulesMatching(permissions[0]);
+//           //return null;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<DecisionRule> result) {
+//            decisionRules.setValue(result);
+//            //super.onPostExecute(result);
+//            //int a = 3;
+//        }
+//    }
 
 }

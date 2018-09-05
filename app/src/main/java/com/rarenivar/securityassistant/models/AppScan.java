@@ -13,10 +13,12 @@ public class AppScan {
 
     private final static String TAG = "AppScan";
     private PackageManager packageManager;
+    private Context context;
     private ArrayList<PackageInfo> appList = new ArrayList<>();
 
     public AppScan(Context context) {
-        packageManager = context.getPackageManager();
+        this.context = context;
+        this.packageManager = context.getPackageManager();
         getUserApps();
     }
 
@@ -39,29 +41,29 @@ public class AppScan {
         }
     }
 
-    private String[] getRequestedPermissions(PackageInfo packageInfo) {
+    public static String[] getRequestedPermissions(PackageInfo packageInfo) {
         if (packageInfo.requestedPermissions != null) {
             return packageInfo.requestedPermissions;
         }
         return null;
     }
 
-    private String getApplicationName(PackageInfo packageInfo) {
+    public static String getApplicationName(PackageInfo packageInfo, Context context) {
         ApplicationInfo applicationInfo;
         try {
-            applicationInfo = packageManager.getApplicationInfo(packageInfo.packageName, 0);
+            applicationInfo = context.getPackageManager().getApplicationInfo(packageInfo.packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             applicationInfo = null;
         }
         return (applicationInfo != null) ?
-                (String) packageManager.getApplicationLabel(applicationInfo) : "UNKNOWN";
+                (String) context.getPackageManager().getApplicationLabel(applicationInfo) : "UNKNOWN";
     }
 
     public void printApps() {
         for(PackageInfo packageInfo: appList) {
             Log.d(TAG, "package is " + packageInfo.packageName);
-            Log.d(TAG, "app name is " + getApplicationName(packageInfo));
+            Log.d(TAG, "app name is " + getApplicationName(packageInfo, context));
             String[] permissions = getRequestedPermissions(packageInfo);
             if (permissions != null && permissions.length > 0) {
                 for(String permission : permissions) {

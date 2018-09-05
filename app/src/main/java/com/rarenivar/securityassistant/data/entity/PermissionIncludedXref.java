@@ -7,6 +7,12 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity(tableName = "PermissionIncludedXref")
 public class PermissionIncludedXref {
 
+    public PermissionIncludedXref(int _id, int decisionRuleID, int permissionID) {
+        this._id = _id;
+        this.decisionRuleID = decisionRuleID;
+        this.permissionID = permissionID;
+    }
+
     @PrimaryKey
     private int _id;
 

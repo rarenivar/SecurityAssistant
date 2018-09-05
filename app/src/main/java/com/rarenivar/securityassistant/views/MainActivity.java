@@ -22,6 +22,7 @@ import android.view.View;
 
 import com.rarenivar.securityassistant.R;
 import com.rarenivar.securityassistant.data.database.DecisionRulesDatabase;
+import com.rarenivar.securityassistant.data.entity.DecisionRule;
 import com.rarenivar.securityassistant.data.entity.Permission;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
 
@@ -34,34 +35,9 @@ public class MainActivity extends AppCompatActivity
     private MainViewModel viewModel;
     private FloatingActionButton appScanButton;
 
-    RoomDatabase.Callback rdc = new RoomDatabase.Callback(){
-        public void onCreate (DecisionRulesDatabase db){
-            Log.d("iscreated", "this is created!");
-            int a = 3;
-            // do something after database has been created
-        }
-        public void onOpen (DecisionRulesDatabase db){
-            Log.d("isopen", "this is open!");
-            int b = 3;
-            //do something every time database is open
-        }
-    };
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-//        new Thread(new Runnable() {
-//            public void run() {
-//                // a potentially  time consuming task
-//                DecisionRulesDatabase db = DecisionRulesDatabase.getInstance(getApplicationContext());
-//                //DecisionRulesDatabase db = Room.databaseBuilder(getApplicationContext(),
-//                //       DecisionRulesDatabase.class, "malwarerules").addCallback(rdc).allowMainThreadQueries().build();
-//                // db.decisionRulesDao().insertAllDecisionRules(DataGenerator.generateDecisionRules());
-//                //List<DecisionRule> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
-//                List<DecisionRule> decisionRulesList = db.decisionRulesDao().getAllDecisionRules();
-//            }
-//        }).start();
 
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -77,13 +53,6 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
         viewModel = ViewModelProviders.of(this).get(MainViewModel.class);
-        viewModel.getAllPermissions().observe(this, new Observer<List<Permission>>() {
-            @Override
-            public void onChanged(@Nullable List<Permission> permissionList) {
-                int a = 3;
-                int b = 3;
-            }
-        });
         if (viewModel.isAppDeviceAdmin()) {
             if (!viewModel.isPasswordSufficient()) {
                 // password needs to be sufficient to use the app
@@ -97,14 +66,34 @@ public class MainActivity extends AppCompatActivity
             startActivityForResult(viewModel.getAdminRequestIntent(),
                     getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
         }
-
         appScanButton = findViewById(R.id.security_scan_button);
+        viewModel.getAllPermissions().observe(this, new Observer<List<Permission>>() {
+            @Override
+            public void onChanged(@Nullable List<Permission> permissions) {
+                Log.d("dude", permissions.toString());
+                int a = 3;
+                int b = 333;
+               // getActionBar().setTitle(permissions.toString());
+            }
+        });
+        viewModel.getDecisions().observe(this, new Observer<List<DecisionRule>>() {
+            @Override
+            public void onChanged(@Nullable List<DecisionRule> decisionRules) {
+                Log.d("dude", decisionRules.toString());
+                int a = 3;
+                int b = 333;
+            }
+        });
         appScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 // do security scan
                 List<Permission> here = viewModel.getAllPermissions().getValue();
-                viewModel.performSecurityScan();
+                List<DecisionRule> here2 = viewModel.getDecisions().getValue();
+                int a = 3;
+                //viewModel.updateMalwareApp();
+                //viewModel.performSecurityScan();
             }
         });
 
@@ -160,8 +149,8 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            if (id == R.id.action_settings) {
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

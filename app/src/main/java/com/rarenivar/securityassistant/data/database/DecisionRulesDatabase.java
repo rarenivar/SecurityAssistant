@@ -3,12 +3,14 @@ package com.rarenivar.securityassistant.data.database;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
+import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.rarenivar.securityassistant.data.DataGenerator;
 import com.rarenivar.securityassistant.data.dao.DecisionRuleDao;
 import com.rarenivar.securityassistant.data.dao.PermissionDao;
 import com.rarenivar.securityassistant.data.dao.PermissionExcludedXrefDao;
@@ -18,7 +20,6 @@ import com.rarenivar.securityassistant.data.entity.Permission;
 import com.rarenivar.securityassistant.data.entity.PermissionExcludedXref;
 import com.rarenivar.securityassistant.data.entity.PermissionIncludedXref;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Database(entities = {
@@ -27,21 +28,16 @@ import java.util.List;
                         PermissionIncludedXref.class,
                         PermissionExcludedXref.class
                      },
-          version = 3)
+          version = 5)
 public abstract class DecisionRulesDatabase extends RoomDatabase {
 
     private final static String DATABASE_NAME = "decisionrulesdb";
 
-    private final MutableLiveData<Boolean> isDatabaseCreated = new MutableLiveData<>();
-
     private static DecisionRulesDatabase INSTANCE;
 
     public abstract DecisionRuleDao decisionRulesDao();
-
     public abstract PermissionDao permissionsDao();
-
     public abstract PermissionIncludedXrefDao permissionsIncludedXrefDao();
-
     public abstract PermissionExcludedXrefDao permissionsExcludedXrefDao();
 
     public static DecisionRulesDatabase getDatabase(final Context context) {
@@ -78,6 +74,8 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
         @Override
         public void onCreate(@NonNull SupportSQLiteDatabase db) {
             super.onCreate(db);
+            // Populate database on creation
+            new PopulateDbAsync(INSTANCE).execute();
 
         }
     };
@@ -89,28 +87,37 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
     private static class PopulateDbAsync extends AsyncTask<Void, Void, Void> {
 
         private final PermissionDao permissionDao;
+        private final DecisionRuleDao decisionRuleDao;
+        private final PermissionExcludedXrefDao permissionExcludedXrefDao;
+        private final PermissionIncludedXrefDao permissionIncludedXrefDao;
 
         PopulateDbAsync(DecisionRulesDatabase db) {
             permissionDao = db.permissionsDao();
+            decisionRuleDao = db.decisionRulesDao();
+            permissionExcludedXrefDao = db.permissionsExcludedXrefDao();
+            permissionIncludedXrefDao = db.permissionsIncludedXrefDao();
         }
 
         @Override
         protected Void doInBackground(final Void... params) {
-            // Start the app with a clean database every time.
-            // Not needed if you only populate on creation.
-            //permissionDao.deleteAll();
 
-            Permission permission = new Permission(3, "Hello1");
-            Permission permission2 = new Permission(4, "Hello2");
-            Permission permission3 = new Permission(5, "Hello3");
-            Permission permission4 = new Permission(6, "Hello4");
-            List<Permission> permissionList = new ArrayList<>();
-            permissionList.add(permission);
-            permissionList.add(permission2);
-            permissionList.add(permission3);
-            permissionList.add(permission4);
-            //permissionDao.insertPermission(permission);
+            permissionDao.deleteAll();
+            decisionRuleDao.deleteAll();
+            permissionIncludedXrefDao.deleteAll();
+            permissionExcludedXrefDao.deleteAll();
+
+            List<Permission> permissionList = DataGenerator.generatePermissions();
             permissionDao.insertAllPermissions(permissionList);
+
+            List<DecisionRule> decisionRuleList = DataGenerator.generateDecisionRules();
+            decisionRuleDao.insertAllDecisionRules(decisionRuleList);
+
+            List<PermissionExcludedXref> permissionExcludedXrefList = DataGenerator.generatePermissionsExcludedXref();
+            permissionExcludedXrefDao.insertAllPermissionsExcludedXref(permissionExcludedXrefList);
+
+            List<PermissionIncludedXref> permissionIncludedXrefDaoList = DataGenerator.generatePermissionsIncludedXref();
+            permissionIncludedXrefDao.insertAllPermissionsIncludedXref(permissionIncludedXrefDaoList);
+
             return null;
         }
     }
