@@ -1,10 +1,12 @@
 package com.rarenivar.securityassistant.views;
 
+import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -26,13 +28,15 @@ import com.rarenivar.securityassistant.data.entity.DecisionRule;
 import com.rarenivar.securityassistant.data.entity.Permission;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
 
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    private MainViewModel viewModel;
+    public MainViewModel viewModel;
     private FloatingActionButton appScanButton;
 
     @Override
@@ -67,31 +71,42 @@ public class MainActivity extends AppCompatActivity
                     getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
         }
         appScanButton = findViewById(R.id.security_scan_button);
-        viewModel.getAllPermissions().observe(this, new Observer<List<Permission>>() {
-            @Override
-            public void onChanged(@Nullable List<Permission> permissions) {
-                Log.d("dude", permissions.toString());
-                int a = 3;
-                int b = 333;
-               // getActionBar().setTitle(permissions.toString());
-            }
-        });
-        viewModel.getDecisions().observe(this, new Observer<List<DecisionRule>>() {
-            @Override
-            public void onChanged(@Nullable List<DecisionRule> decisionRules) {
-                Log.d("dude", decisionRules.toString());
-                int a = 3;
-                int b = 333;
-            }
-        });
+//        viewModel.getAllPermissions().observe(this, new Observer<List<Permission>>() {
+//            @Override
+//            public void onChanged(@Nullable List<Permission> permissions) {
+//                Log.d("dude", permissions.toString());
+//                int a = 3;
+//                int b = 333;
+//               // getActionBar().setTitle(permissions.toString());
+//            }
+//        });
+//        viewModel.getDecisions().observe(this, new Observer<List<DecisionRule>>() {
+//            @Override
+//            public void onChanged(@Nullable List<DecisionRule> decisionRules) {
+//                Log.d("dude", decisionRules.toString());
+//                int a = 3;
+//                int b = 333;
+//            }
+//        });
         appScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 // do security scan
-                List<Permission> here = viewModel.getAllPermissions().getValue();
-                List<DecisionRule> here2 = viewModel.getDecisions().getValue();
+
+
+
+                List<String> permissions = new ArrayList<>();
+                //permissions.add("android.permission.INTERNET");
+                //permissions.add("android.permission.READ_SMS");
+                //permissions.add("android.permission.WRITE_EXTERNAL_STORAGE");
+
+                permissions.add("android.permission.SEND_SMS");
+                permissions.add("android.permission.WRITE_EXTERNAL_STORAGE");
+//                List<DecisionRule> rules = viewModel.getMatchingDecisionRules(permissions);
+                new AgentAsyncTask(this, permissions).execute();
                 int a = 3;
+                int b = 3;
                 //viewModel.updateMalwareApp();
                 //viewModel.performSecurityScan();
             }
@@ -172,6 +187,42 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    private class AgentAsyncTask extends AsyncTask<Void, Void, List<DecisionRule>> {
+
+        //Prevent leak
+        private WeakReference<MainActivity> weakActivity;
+        private List<String> permissions;
+
+        public AgentAsyncTask(View.OnClickListener activity, List<String> permissions) {
+            //weakActivity = new WeakReference<>((MainActivity) activity);
+            this.permissions = permissions;
+        }
+
+        @Override
+        protected List<DecisionRule> doInBackground(Void... params) {
+            List<DecisionRule> rules = viewModel.getMatchingDecisionRules(permissions);
+            return rules;
+        }
+
+        @Override
+        protected void onPostExecute(List<DecisionRule> agentsCount) {
+            int a = 3;
+            int b = 3;
+            //Activity activity = weakActivity.get();
+//            if (activity == null) {
+//                return;
+//            }
+
+//            if (agentsCount > 0) {
+//                //2: If it already exists then prompt user
+//                Toast.makeText(activity, "Agent already exists!", Toast.LENGTH_LONG).show();
+//            } else {
+//                Toast.makeText(activity, "Agent does not exist! Hurray :)", Toast.LENGTH_LONG).show();
+//                activity.onBackPressed();
+//            }
+        }
     }
 
 }

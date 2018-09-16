@@ -28,7 +28,6 @@ public class MainViewModel extends AndroidViewModel {
     public AdminPolicyManager adminPoliciesManager;
     private DecisionRulesRepository repository;
     public SecurityScan securityScan;
-    public LiveData<List<Permission>> permissions;
     public LiveData<List<DecisionRule>> decisions;
 //    private MutableLiveData<List<String>> malwareApps = new MutableLiveData<List<String>>() {
 //        @Override
@@ -53,10 +52,11 @@ public class MainViewModel extends AndroidViewModel {
     public MainViewModel(@NonNull Application application) {
         super(application);
         repository = new DecisionRulesRepository(application);
-        permissions = repository.getAllPermissions();
-        decisions = repository.getAllDecisions();
-        //allPermissions = repository.getAllPermissions();\
         init();
+    }
+
+    public List<DecisionRule> getMatchingDecisionRules(List<String> permissionList) {
+        return repository.getMatchingDecisionRules(permissionList);
     }
 
     public void updateMalwareApp() {
@@ -71,16 +71,6 @@ public class MainViewModel extends AndroidViewModel {
     public void init() {
         adminPoliciesManager = new AdminPolicyManager(getApplication().getApplicationContext());
     }
-
-    public LiveData<List<Permission>> getAllPermissions() {
-        return permissions;
-    }
-
-    public LiveData<List<DecisionRule>> getDecisions() {
-        return decisions;
-    }
-
-    //public void insert(Permission permission) { repository.insert(permission); }
 
     public boolean isAppDeviceAdmin() {
         if (adminPoliciesManager.getDevicePolicyManager() != null

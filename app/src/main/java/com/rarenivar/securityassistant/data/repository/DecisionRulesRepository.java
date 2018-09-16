@@ -27,51 +27,12 @@ public class DecisionRulesRepository {
     // https://github.com/googlesamples
     public DecisionRulesRepository(Application application) {
         DecisionRulesDatabase db = DecisionRulesDatabase.getDatabase(application);
-        permissionDao = db.permissionsDao();
-        permissions = permissionDao.getAllPermissions();
         decisionRuleDao = db.decisionRulesDao();
-        decisions = decisionRuleDao.getAllDecisionRules();
         int a = 3;
     }
 
-//    public List<DecisionRule> getMatchingDecisionRules(List<String> permissions) {
-//        return decisionRuleDao.getDecisionRulesMatching(permissions);
-//    }
-
-    public LiveData<List<Permission>> getAllPermissions() {
-        return permissions;
+    public List<DecisionRule> getMatchingDecisionRules(List<String> permissions) {
+        return decisionRuleDao.getDecisionRulesMatching(permissions);
     }
-
-    public LiveData<List<DecisionRule>> getAllDecisions() {
-        return decisions;
-    }
-
-//    public void getMachingDecisionRules(List<String> permissions) {
-//        new matchPermissionsAsyncTask(decisionRuleDao).execute(permissions);
-//    }
-
-
-//    private class matchPermissionsAsyncTask extends AsyncTask<List<String>, Void, List<DecisionRule>> {
-//
-//        private DecisionRuleDao asyncDecisionRuleDaoTask;
-//
-//        matchPermissionsAsyncTask(DecisionRuleDao dao) {
-//            asyncDecisionRuleDaoTask = dao;
-//        }
-//
-//        @Override
-//        protected List<DecisionRule> doInBackground(List<String>... permissions) {
-//           //asyncDecisionRuleDaoTask.getAllDecisionRules();
-//           return asyncDecisionRuleDaoTask.getDecisionRulesMatching(permissions[0]);
-//           //return null;
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<DecisionRule> result) {
-//            decisionRules.setValue(result);
-//            //super.onPostExecute(result);
-//            //int a = 3;
-//        }
-//    }
 
 }
