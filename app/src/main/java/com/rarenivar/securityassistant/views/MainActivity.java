@@ -43,6 +43,7 @@ public class MainActivity extends AppCompatActivity
 
         setContentView(R.layout.activity_main);
         scan_results_textview = findViewById(R.id.scan_results_textview);
+        scan_results_textview.setText(getString(R.string.perform_scan_msg));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
