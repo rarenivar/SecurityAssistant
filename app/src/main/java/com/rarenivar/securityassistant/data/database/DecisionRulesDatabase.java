@@ -1,9 +1,7 @@
 package com.rarenivar.securityassistant.data.database;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.persistence.db.SupportSQLiteDatabase;
 import android.arch.persistence.room.Database;
-import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
@@ -28,7 +26,7 @@ import java.util.List;
                         PermissionIncludedXref.class,
                         PermissionExcludedXref.class
                      },
-          version = 5)
+          version = 6)
 public abstract class DecisionRulesDatabase extends RoomDatabase {
 
     private final static String DATABASE_NAME = "decisionrulesdb";
@@ -68,7 +66,7 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
             super.onOpen(db);
             // If you want to keep the data through app restarts,
             // comment out the following line.
-            new PopulateDbAsync(INSTANCE).execute();
+            //new PopulateDbAsync(INSTANCE).execute();
         }
 
         @Override
@@ -92,6 +90,7 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
         private final PermissionIncludedXrefDao permissionIncludedXrefDao;
 
         PopulateDbAsync(DecisionRulesDatabase db) {
+
             permissionDao = db.permissionsDao();
             decisionRuleDao = db.decisionRulesDao();
             permissionExcludedXrefDao = db.permissionsExcludedXrefDao();
@@ -100,11 +99,6 @@ public abstract class DecisionRulesDatabase extends RoomDatabase {
 
         @Override
         protected Void doInBackground(final Void... params) {
-
-            permissionDao.deleteAll();
-            decisionRuleDao.deleteAll();
-            permissionIncludedXrefDao.deleteAll();
-            permissionExcludedXrefDao.deleteAll();
 
             List<Permission> permissionList = DataGenerator.generatePermissions();
             permissionDao.insertAllPermissions(permissionList);

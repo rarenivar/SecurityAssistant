@@ -1,15 +1,11 @@
 package com.rarenivar.securityassistant.views;
 
-import android.app.Activity;
 import android.app.admin.DevicePolicyManager;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.arch.persistence.room.RoomDatabase;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,19 +13,20 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.rarenivar.securityassistant.R;
-import com.rarenivar.securityassistant.data.database.DecisionRulesDatabase;
 import com.rarenivar.securityassistant.data.entity.DecisionRule;
-import com.rarenivar.securityassistant.data.entity.Permission;
+import com.rarenivar.securityassistant.models.AppScan;
+import com.rarenivar.securityassistant.models.ScanObj;
 import com.rarenivar.securityassistant.viewmodels.MainViewModel;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 
@@ -38,12 +35,14 @@ public class MainActivity extends AppCompatActivity
 
     public MainViewModel viewModel;
     private FloatingActionButton appScanButton;
+    public TextView scan_results_textview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
+        scan_results_textview = findViewById(R.id.scan_results_textview);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,45 +70,9 @@ public class MainActivity extends AppCompatActivity
                     getResources().getInteger(R.integer.DEVICE_ADMIN_REQUEST_CODE));
         }
         appScanButton = findViewById(R.id.security_scan_button);
-//        viewModel.getAllPermissions().observe(this, new Observer<List<Permission>>() {
-//            @Override
-//            public void onChanged(@Nullable List<Permission> permissions) {
-//                Log.d("dude", permissions.toString());
-//                int a = 3;
-//                int b = 333;
-//               // getActionBar().setTitle(permissions.toString());
-//            }
-//        });
-//        viewModel.getDecisions().observe(this, new Observer<List<DecisionRule>>() {
-//            @Override
-//            public void onChanged(@Nullable List<DecisionRule> decisionRules) {
-//                Log.d("dude", decisionRules.toString());
-//                int a = 3;
-//                int b = 333;
-//            }
-//        });
-        appScanButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                // do security scan
-
-
-
-                List<String> permissions = new ArrayList<>();
-                //permissions.add("android.permission.INTERNET");
-                //permissions.add("android.permission.READ_SMS");
-                //permissions.add("android.permission.WRITE_EXTERNAL_STORAGE");
-
-                permissions.add("android.permission.SEND_SMS");
-                permissions.add("android.permission.WRITE_EXTERNAL_STORAGE");
-//                List<DecisionRule> rules = viewModel.getMatchingDecisionRules(permissions);
-                new AgentAsyncTask(this, permissions).execute();
-                int a = 3;
-                int b = 3;
-                //viewModel.updateMalwareApp();
-                //viewModel.performSecurityScan();
-            }
+        appScanButton.setOnClickListener((View v) -> {
+                scan_results_textview.setText(getString(R.string.scanning_msg));
+                new AgentAsyncTask(MainActivity.this, viewModel).execute();
         });
 
     }
@@ -189,39 +152,39 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private class AgentAsyncTask extends AsyncTask<Void, Void, List<DecisionRule>> {
+    private static class AgentAsyncTask extends AsyncTask<Void, Void, String> {
 
-        //Prevent leak
+        // Weak reference to activity to prevent memory leak
         private WeakReference<MainActivity> weakActivity;
-        private List<String> permissions;
+        private MainViewModel viewModel;
 
-        public AgentAsyncTask(View.OnClickListener activity, List<String> permissions) {
-            //weakActivity = new WeakReference<>((MainActivity) activity);
-            this.permissions = permissions;
+        AgentAsyncTask(MainActivity activity, MainViewModel viewModel) {
+            this.weakActivity = new WeakReference<>(activity);
+            this.viewModel = viewModel;
         }
 
         @Override
-        protected List<DecisionRule> doInBackground(Void... params) {
-            List<DecisionRule> rules = viewModel.getMatchingDecisionRules(permissions);
-            return rules;
+        protected String doInBackground(Void... params) {
+            StringBuilder appsmatching = new StringBuilder("");
+            AppScan scan = new AppScan(weakActivity.get());
+            ArrayList<ScanObj> objs = scan.getScanObjs();
+            for (ScanObj obj : objs)
+            {
+                List<DecisionRule> rules = viewModel.getMatchingDecisionRules(Arrays.asList(obj.getPermissions()));
+                if (!rules.isEmpty())
+                {
+                    appsmatching.append(obj.getAppName() + " ");
+                }
+            }
+            if (appsmatching == null || appsmatching.toString().equals("")) {
+                appsmatching.append(weakActivity.get().getString(R.string.no_scan_results_msg));
+            }
+            return appsmatching.toString();
         }
 
         @Override
-        protected void onPostExecute(List<DecisionRule> agentsCount) {
-            int a = 3;
-            int b = 3;
-            //Activity activity = weakActivity.get();
-//            if (activity == null) {
-//                return;
-//            }
-
-//            if (agentsCount > 0) {
-//                //2: If it already exists then prompt user
-//                Toast.makeText(activity, "Agent already exists!", Toast.LENGTH_LONG).show();
-//            } else {
-//                Toast.makeText(activity, "Agent does not exist! Hurray :)", Toast.LENGTH_LONG).show();
-//                activity.onBackPressed();
-//            }
+        protected void onPostExecute(String apps) {
+            weakActivity.get().scan_results_textview.setText(apps);
         }
     }
 

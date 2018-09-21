@@ -30,7 +30,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Potential Malware Apps"
+                        android:text="@string/malware_scan_results_textview"
                         android:textAppearance="@style/TextAppearance.Header"
                         style="@style/TextComponent.ItemRow" />
 
@@ -40,7 +40,7 @@
                         android:fontFamily="sans-serif-light"
                         android:lineSpacingExtra="8dp"
                         android:textSize="16sp"
-                        android:text="Google Duo, WhatsApp, Reddit" />
+                        android:id="@+id/scan_results_textview"/>
 
                 </LinearLayout>
 
@@ -65,7 +65,7 @@
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Security Misconfigurations"
+                        android:text="@string/security_misconfigurations_textview"
                         android:textAppearance="@style/TextAppearance.Header"
                         style="@style/TextComponent.ItemRow" />
 

@@ -14,6 +14,7 @@ public class AppScan {
     private final static String TAG = "AppScan";
     private PackageManager packageManager;
     private Context context;
+    private ArrayList<ScanObj> scanObjs;
     private ArrayList<PackageInfo> appList = new ArrayList<>();
 
     public AppScan(Context context) {
@@ -36,19 +37,28 @@ public class AppScan {
             }
             catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
-                continue;
             }
+        }
+        scanObjs = new ArrayList<>();
+        for(PackageInfo packageInfo : appList) {
+            String appName = getApplicationName(packageInfo, context);
+            String[] permissions = getRequestedPermissions(packageInfo);
+            scanObjs.add(new ScanObj(appName, permissions));
         }
     }
 
-    public static String[] getRequestedPermissions(PackageInfo packageInfo) {
+    public ArrayList<ScanObj> getScanObjs() {
+        return scanObjs;
+    }
+
+    private static String[] getRequestedPermissions(PackageInfo packageInfo) {
         if (packageInfo.requestedPermissions != null) {
             return packageInfo.requestedPermissions;
         }
         return null;
     }
 
-    public static String getApplicationName(PackageInfo packageInfo, Context context) {
+    private static String getApplicationName(PackageInfo packageInfo, Context context) {
         ApplicationInfo applicationInfo;
         try {
             applicationInfo = context.getPackageManager().getApplicationInfo(packageInfo.packageName, 0);
@@ -61,7 +71,7 @@ public class AppScan {
     }
 
     public void printApps() {
-        for(PackageInfo packageInfo: appList) {
+        for(PackageInfo packageInfo : appList) {
             Log.d(TAG, "package is " + packageInfo.packageName);
             Log.d(TAG, "app name is " + getApplicationName(packageInfo, context));
             String[] permissions = getRequestedPermissions(packageInfo);

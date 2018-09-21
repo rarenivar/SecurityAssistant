@@ -24,10 +24,15 @@
     <!-- Drawer menu list -->
     <string name="header_image_content_description">Header image</string>
 
+    <string name="malware_scan_results_textview">Potential Malware Apps</string>
+    <string name="security_misconfigurations_textview">Security Misconfigurations</string>
+
     <!-- Messages -->
     <string name="disable_camera_update_msg">Device cameras have been disabled!</string>
     <string name="enable_camera_update_msg">Device cameras have been enabled!</string>
     <string name="admin_request_msg">The app requires Adminitrator Rights in order to properly function</string>
+    <string name="no_scan_results_msg">No potential malware apps found</string>
+    <string name="scanning_msg">Scanning&#8230;</string>
 
     <!-- Notifications -->
     <string name="notification_unsecured_wifi_title">Unsecured WiFi</string>
