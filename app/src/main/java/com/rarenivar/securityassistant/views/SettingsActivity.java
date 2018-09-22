@@ -18,8 +18,6 @@ import com.rarenivar.securityassistant.util.WiFiUtil;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    private static final String TAG = "SettingsActivity";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

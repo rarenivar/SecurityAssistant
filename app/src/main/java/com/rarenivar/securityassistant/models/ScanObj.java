@@ -1,6 +1,5 @@
 package com.rarenivar.securityassistant.models;
 
-import java.util.ArrayList;
 
 public class ScanObj {
 

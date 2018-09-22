@@ -4,14 +4,12 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AppScan {
 
-    private final static String TAG = "AppScan";
     private PackageManager packageManager;
     private Context context;
     private ArrayList<ScanObj> scanObjs;
@@ -68,20 +66,6 @@ public class AppScan {
         }
         return (applicationInfo != null) ?
                 (String) context.getPackageManager().getApplicationLabel(applicationInfo) : "UNKNOWN";
-    }
-
-    public void printApps() {
-        for(PackageInfo packageInfo : appList) {
-            Log.d(TAG, "package is " + packageInfo.packageName);
-            Log.d(TAG, "app name is " + getApplicationName(packageInfo, context));
-            String[] permissions = getRequestedPermissions(packageInfo);
-            if (permissions != null && permissions.length > 0) {
-                for(String permission : permissions) {
-                    Log.d(TAG, "permission name is " + permission);
-                }
-            }
-
-        }
     }
 
 }

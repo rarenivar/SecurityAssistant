@@ -12,8 +12,6 @@ import com.rarenivar.securityassistant.util.WiFiUtil;
 
 public class WiFiConnectivityReceiver extends BroadcastReceiver {
 
-    private static final String TAG = "WiFiConnectivityReceive";
-
     @Override
     public void onReceive(Context context, Intent intent) {
         SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(context);
