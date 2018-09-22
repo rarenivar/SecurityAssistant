@@ -15,6 +15,11 @@ import java.util.List;
 
 public class MainViewModel extends AndroidViewModel {
 
+    private static final String CAMERA_RECOMMENDATION = "Disable camera\n";
+    private static final String ENCRYPTION_RECOMMENDATION = "Encrypt file system\n";
+    private static final String UNSECURED_ACCESS_POINT_RECOMMENDATION = "Disable unsecured access points";
+    private static final String NO_RECOMMENDATIONS = "All security settings look good!";
+
     private AdminPolicyManager adminPoliciesManager;
     private DecisionRulesRepository repository;
 
@@ -48,4 +53,21 @@ public class MainViewModel extends AndroidViewModel {
         return adminPoliciesManager.isPasswordSufficient();
     }
 
+    public String getSecuritySetttingRecommendations()
+    {
+        StringBuilder recommendations = new StringBuilder("");
+        if (!adminPoliciesManager.getCameraStatus()) {
+            recommendations.append(CAMERA_RECOMMENDATION);
+        }
+        if (!adminPoliciesManager.isStorageEncrypted()) {
+            recommendations.append(ENCRYPTION_RECOMMENDATION);
+        }
+        if (adminPoliciesManager.getUnsecuredWiFiStatus()) {
+            recommendations.append(UNSECURED_ACCESS_POINT_RECOMMENDATION);
+        }
+        if (recommendations.toString().equals("")) {
+            recommendations.append(NO_RECOMMENDATIONS);
+        }
+        return recommendations.toString();
+    }
 }

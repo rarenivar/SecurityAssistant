@@ -75,7 +75,7 @@
                         android:fontFamily="sans-serif-light"
                         android:lineSpacingExtra="8dp"
                         android:textSize="16sp"
-                        android:text="Camera enabled, install from unknown sources enabled, device not encrypted" />
+                        android:id="@+id/security_settings_recommendations_textview"/>
 
                 </LinearLayout>
 

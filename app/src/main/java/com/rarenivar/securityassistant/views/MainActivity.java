@@ -32,17 +32,19 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public MainViewModel viewModel;
+    private MainViewModel viewModel;
     private FloatingActionButton appScanButton;
-    public TextView scan_results_textview;
+    private TextView scanResultsTextview;
+    private TextView recommendationsTextview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        scan_results_textview = findViewById(R.id.scan_results_textview);
-        scan_results_textview.setText(getString(R.string.perform_scan_msg));
+        scanResultsTextview = findViewById(R.id.scan_results_textview);
+        recommendationsTextview = findViewById(R.id.security_settings_recommendations_textview);
+        scanResultsTextview.setText(getString(R.string.perform_scan_msg));
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -71,9 +73,10 @@ public class MainActivity extends AppCompatActivity
         }
         appScanButton = findViewById(R.id.security_scan_button);
         appScanButton.setOnClickListener((View v) -> {
-                scan_results_textview.setText(getString(R.string.scanning_msg));
+                scanResultsTextview.setText(getString(R.string.scanning_msg));
                 new AgentAsyncTask(MainActivity.this, viewModel).execute();
         });
+        recommendationsTextview.setText(viewModel.getSecuritySetttingRecommendations());
 
     }
 
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected void onPostExecute(String apps) {
-            weakActivity.get().scan_results_textview.setText(apps);
+            weakActivity.get().scanResultsTextview.setText(apps);
         }
     }
 
