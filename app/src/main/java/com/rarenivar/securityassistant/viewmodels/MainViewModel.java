@@ -62,7 +62,7 @@ public class MainViewModel extends AndroidViewModel {
         if (!adminPoliciesManager.isStorageEncrypted()) {
             recommendations.append(ENCRYPTION_RECOMMENDATION);
         }
-        if (adminPoliciesManager.getUnsecuredWiFiStatus()) {
+        if (!adminPoliciesManager.getUnsecuredWiFiStatus()) {
             recommendations.append(UNSECURED_ACCESS_POINT_RECOMMENDATION);
         }
         if (recommendations.toString().equals("")) {

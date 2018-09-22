@@ -25,15 +25,19 @@
     <string name="header_image_content_description">Header image</string>
 
     <string name="malware_scan_results_textview">Potential Malware Apps</string>
-    <string name="security_misconfigurations_textview">Security Misconfigurations</string>
+    <string name="security_misconfigurations_textview">Security Settings Recommendations</string>
 
     <!-- Messages -->
+    <string name="ok_button">OK</string>
     <string name="disable_camera_update_msg">Device cameras have been disabled!</string>
     <string name="enable_camera_update_msg">Device cameras have been enabled!</string>
     <string name="admin_request_msg">The app requires Adminitrator Rights in order to properly function</string>
     <string name="no_scan_results_msg">No potential malware apps found</string>
     <string name="scanning_msg">Scanning&#8230;</string>
     <string name="perform_scan_msg">Perform scan for results</string>
+    <string name="encryption_msg_title">Encryption Status</string>
+    <string name="encryption_not_supported_msg">File system encryption is not supported</string>
+    <string name="encryption_active_msg">File system is already encrypted or is being encrypted</string>
 
     <!-- Notifications -->
     <string name="notification_unsecured_wifi_title">Unsecured WiFi</string>

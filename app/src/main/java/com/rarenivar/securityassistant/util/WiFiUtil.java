@@ -31,7 +31,6 @@ public class WiFiUtil {
      */
     private static boolean isWiFiSecured(WifiConfiguration wifiConfiguration) {
         // There is no key management scheme
-        // TODO: finish implementation
         if (wifiConfiguration.allowedKeyManagement.get(NONE)) {
             return false;
         } else {

@@ -4,6 +4,8 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.v7.app.AlertDialog;
 
@@ -84,10 +86,10 @@ public class AdminPolicyManager {
             return true;
         }
         else if (encryptStatusInt == ENCRYPTION_STATUS_UNSUPPORTED) {
-            alert.setTitle("the title");
+            alert.setTitle(context.getString(R.string.encryption_msg_title));
             alert.setIcon(R.drawable.ic_launcher_background);
-            alert.setMessage("asdff");
-            alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+            alert.setMessage(context.getString(R.string.encryption_not_supported_msg));
+            alert.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.ok_button),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -100,10 +102,10 @@ public class AdminPolicyManager {
                 encryptStatusInt == ENCRYPTION_STATUS_ACTIVE_DEFAULT_KEY ||
                 encryptStatusInt == ENCRYPTION_STATUS_ACTIVE_PER_USER) {
 
-            alert.setTitle("the title");
+            alert.setTitle(context.getString(R.string.encryption_msg_title));
             alert.setIcon(R.drawable.ic_launcher_background);
-            alert.setMessage("the title");
-            alert.setButton(AlertDialog.BUTTON_NEUTRAL, "OK",
+            alert.setMessage(context.getString(R.string.encryption_active_msg));
+            alert.setButton(AlertDialog.BUTTON_NEUTRAL, context.getString(R.string.ok_button),
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
@@ -114,21 +116,9 @@ public class AdminPolicyManager {
         return false;
     }
 
-    public boolean getInstallFromUnknownSourcesValue() {
-        // Let's always assume it's true unless proven otherwise
-        boolean isUnknownSources = true;
-        try {
-            isUnknownSources = android.provider.Settings.Secure
-                    .getInt(context.getContentResolver(),
-                            Settings.Secure.INSTALL_NON_MARKET_APPS) == 1;
-        } catch (Settings.SettingNotFoundException e) {
-            // TODO: handle exception
-        }
-        return isUnknownSources;
-    }
-
     public boolean getUnsecuredWiFiStatus() {
-        return true;//AppSettings.getSecuredWifiOnlyFlag(context);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return prefs.getBoolean(context.getString(R.string.settings_secured_wifis), true);
     }
 
     public boolean getCameraStatus() {
